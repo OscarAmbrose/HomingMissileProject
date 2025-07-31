@@ -7,6 +7,9 @@
 #include "BaseRocket.generated.h"
 
 class URocketStatManager;
+struct FMissileComponentSlot;
+class URocketMovement;
+//struct URocketComponentSlot;
 
 UCLASS(Blueprintable, BlueprintType)
 class HOMINGMISSILEPROJECT_API ABaseRocket : public AActor
@@ -20,6 +23,15 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<URocketStatManager> StatManager;
 
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<URocketMovement> RocketMovement;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<FMissileComponentSlot> ComponentSlots;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float LaunchSpeed = 1000;
+
 	/// <summary>
 	/// Get a reference to the current stat manager.
 	/// </summary>
@@ -28,7 +40,13 @@ public:
 	URocketStatManager* GetStatManager() const { return StatManager.Get(); }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	AActor* CurrentTarget;
+	FVector CurrentTargetLocation = FVector();
+
+	UFUNCTION(BlueprintCallable, Category = "Rocket")
+	void LaunchRocket();
+
+	UFUNCTION()
+	bool ConsumeFuel(float fuelToConsume);
 
 protected:
 	// Called when the game starts or when spawned

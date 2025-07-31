@@ -10,7 +10,7 @@
  * Implementation of all of the base class data assets.
  */
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class HOMINGMISSILEPROJECT_API UBaseRocketTriggerData : public URocketComponentDataBase
 {
     GENERATED_BODY()
@@ -25,7 +25,7 @@ public:
     }
 };
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class HOMINGMISSILEPROJECT_API UBaseRocketTrackingSystemData : public URocketComponentDataBase
 {
     GENERATED_BODY()
@@ -40,7 +40,7 @@ public:
     }
 };
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class HOMINGMISSILEPROJECT_API UBaseRocketFinsData : public URocketComponentDataBase
 {
     GENERATED_BODY()
@@ -56,7 +56,7 @@ public:
 };
 
 
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class HOMINGMISSILEPROJECT_API UBaseRocketEngineData : public URocketComponentDataBase
 {
 	GENERATED_BODY()

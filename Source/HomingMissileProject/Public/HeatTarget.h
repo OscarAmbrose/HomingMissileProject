@@ -4,17 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "BaseRocketComponent.generated.h"
+#include "HeatTarget.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), Blueprintable, BlueprintType)
-class HOMINGMISSILEPROJECT_API UBaseRocketComponent : public UActorComponent
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+class HOMINGMISSILEPROJECT_API UHeatTarget : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UBaseRocketComponent();
+	UHeatTarget();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float HeatValue = 500;
 
 protected:
 	// Called when the game starts

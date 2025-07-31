@@ -9,11 +9,12 @@
 UENUM(BlueprintType)
 enum class ERocketStatType : uint8
 {
-	Health,
 	Fuel,
 	MaxSpeed UMETA(DisplayName = "Max Speed"),
 	Weight,
-	Acceleration
+	Acceleration,
+	Manouverability,
+	Destructivity
 };
 
 #include "RocketStatManager.generated.h"
@@ -41,6 +42,9 @@ public:
 	UFUNCTION(BlueprintPure, meta = (Category = "StatManager", KeyWords = "Rocket Statistics Manager Get Find"))
 	void GetStat(ERocketStatType Stat, float& foundValue, bool& success) const;
 
+
+	UFUNCTION(BlueprintCallable, meta = (Category = "StatManager", KeyWords = "Rocket Statistics Manager Clear Reset"))
+	void ClearStats();
 	/// <summary>
 	/// Changes a stat by the amount specified in Value Change.
 	/// </summary>

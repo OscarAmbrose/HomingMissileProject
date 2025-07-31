@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "RocketStatManager.h"
 #include "RocketComponentStats.generated.h"
 
 UENUM(BlueprintType)
@@ -17,26 +18,26 @@ enum class ERocketComponentType : uint8
 
 class UBaseRocketComponent;
 
-USTRUCT(BlueprintType)
-struct FRocketComponentData
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0.0", UIMin = "0.0"))
-	float ComponentWeight = 5.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Acceleration = 5.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Manouverability = 16.6f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Destructivity = 100.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxSpeed = 100.0f;
-};
+//USTRUCT(BlueprintType)
+//struct FRocketComponentData
+//{
+//	GENERATED_BODY()
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0.0", UIMin = "0.0"))
+//	float ComponentWeight = 5.0f;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	float Acceleration = 5.0f;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	float Manouverability = 16.6f;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	float Destructivity = 100.0f;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	float MaxSpeed = 100.0f;
+//};
 
 /**
  * 
@@ -47,15 +48,15 @@ class HOMINGMISSILEPROJECT_API URocketComponentDataBase : public UDataAsset
 	GENERATED_BODY()
 	
 public:
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<ERocketStatType, float> StatMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString ComponentName = TEXT("DefaultName");
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	ERocketComponentType ComponentType = ERocketComponentType::Engine;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FRocketComponentData ComponentStats;
 
 	UPROPERTY()
 	bool bHasAdditionalComponent = false;
@@ -75,7 +76,7 @@ public:
 	UFUNCTION(BlueprintPure, meta = (Keywords = "mass weight rocket component"))
 	float GetComponentWeight() const
 	{
-		return ComponentStats.ComponentWeight;
+		return *StatMap.Find(ERocketStatType::Weight);
 	}
 
 	UFUNCTION(BlueprintPure, meta = (Keywords = "Socket Attach Point Mesh Rocket Component"))
@@ -88,29 +89,5 @@ public:
 	TSubclassOf<UBaseRocketComponent> GetComponentComponentToAdd() const
 	{
 		return ComponentToAdd;
-	}
-
-	UFUNCTION(BlueprintPure, meta = (Keywords = "Acceleration speed rocket component"))
-	float GetComponentAcceleration() const
-	{
-		return ComponentStats.Acceleration;
-	}
-
-	UFUNCTION(BlueprintPure, meta = (Keywords = "Manouverability turnrate rocket component"))
-	float GetComponentManouverability() const
-	{
-		return ComponentStats.Manouverability;
-	}
-
-	UFUNCTION(BlueprintPure, meta = (Keywords = "Destructivity power damage rocket component"))
-	float GetComponentDestructivity() const
-	{
-		return ComponentStats.Destructivity;
-	}
-
-	UFUNCTION(BlueprintPure, meta = (Keywords = "MaxSpeed Speed Max SpeedCap rocket component"))
-	float GetComponentMaxSpeed() const
-	{
-		return ComponentStats.MaxSpeed;
 	}
 };

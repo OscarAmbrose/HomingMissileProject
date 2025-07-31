@@ -10,6 +10,9 @@ URocketStatManager::URocketStatManager()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+
+	//ClearStats();
+
 	//Add the tag which will be used to find the stat manager for other components.
 	ComponentTags.Add(FName("StatManager"));
 
@@ -31,6 +34,11 @@ void URocketStatManager::GetStat(ERocketStatType Stat, float& foundValue, bool& 
 	}
 	foundValue = *Value;
 	success = true;
+}
+
+void URocketStatManager::ClearStats()
+{
+	StatMap.Empty();
 }
 
 
