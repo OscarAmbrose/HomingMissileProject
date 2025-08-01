@@ -18,6 +18,10 @@ ABaseRocket::ABaseRocket()
 	UE_LOG(LogTemp, Warning, TEXT("%s"), FindComponentByTag(UActorComponent::StaticClass(), TEXT("StatManager")) ? TEXT("Found Manager") : TEXT("Didnt find Manager"));
 }
 
+void ABaseRocket::ExplodeRocket_Implementation()
+{
+}
+
 void ABaseRocket::LaunchRocket()
 {
 	if (!RocketMovement) { return; }

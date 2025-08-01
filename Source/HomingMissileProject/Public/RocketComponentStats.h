@@ -18,30 +18,6 @@ enum class ERocketComponentType : uint8
 
 class UBaseRocketComponent;
 
-//USTRUCT(BlueprintType)
-//struct FRocketComponentData
-//{
-//	GENERATED_BODY()
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0.0", UIMin = "0.0"))
-//	float ComponentWeight = 5.0f;
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-//	float Acceleration = 5.0f;
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-//	float Manouverability = 16.6f;
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-//	float Destructivity = 100.0f;
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-//	float MaxSpeed = 100.0f;
-//};
-
-/**
- * 
- */
 UCLASS(Abstract)
 class HOMINGMISSILEPROJECT_API URocketComponentDataBase : public UDataAsset
 {

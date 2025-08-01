@@ -67,7 +67,7 @@ void UHeatSeekingBrain::HandleTimerTick()
 		dotProduct = FVector::DotProduct(seekerDirection, targetDirection);
 
 		distance = FVector::Dist(targetOwner->GetActorLocation(), seekerLocation);
-		if (GEngine) GEngine->AddOnScreenDebugMessage(22, 5.f, FColor::Red, FString::Printf(TEXT("Distance: %.2f"), distance));
+
 		heatScore = heatTarget->HeatValue / distance;
 
 		UE_LOG(LogTemp, Warning, TEXT("Target Heat: %f, DetectableValue: %f"), heatScore, DetectableValue);
@@ -107,7 +107,7 @@ void UHeatSeekingBrain::HandleTimerTick()
 
 	DrawDebugLine(GetWorld(), GetOwner()->GetActorLocation(), targetLocation, FColor::Red, false, 0.05f, 0, 2.0f);
 	DrawDebugBox(GetWorld(), targetLocation, FVector(50, 50, 50), FQuat::Identity, FColor::Red, false, 0.05f, 0, 2.0f);
-	DrawDebugCone(
+	/*DrawDebugCone(
 		GetWorld(),
 		GetOwner()->GetActorLocation(),
 		GetOwner()->GetActorForwardVector(),
@@ -120,7 +120,7 @@ void UHeatSeekingBrain::HandleTimerTick()
 		0.05f,
 		0,
 		3.0f
-	);
+	);*/
 }
 
 FVector UHeatSeekingBrain::PredictTargetMotion(UHeatTarget* target, float distance)
@@ -128,7 +128,7 @@ FVector UHeatSeekingBrain::PredictTargetMotion(UHeatTarget* target, float distan
 	if (!target) { return FVector(); }
 	AActor* targetActor = target->GetOwner();
 	FVector resultLocation = targetActor->GetActorLocation();
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Distance: %.2f"), distance));
+
 	float predictionTimeStep = FMath::Lerp(0.0f, predictionStepValue, FMath::Clamp(distance / predicitionFallOffStart, 0.0f, 1.0f));
 
 	resultLocation += targetActor->GetVelocity() * predictionTimeStep;

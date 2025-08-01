@@ -39,6 +39,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Stats")
 	URocketStatManager* GetStatManager() const { return StatManager.Get(); }
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void ExplodeRocket();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector CurrentTargetLocation = FVector();
 
