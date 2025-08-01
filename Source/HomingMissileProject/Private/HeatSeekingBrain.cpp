@@ -30,7 +30,9 @@ void UHeatSeekingBrain::StopCheckTargetsTimer()
 
 void UHeatSeekingBrain::BeginPlay()
 {
-	StartTimer(0.2f, true);
+	Super::BeginPlay();
+
+	StartTimer(0.05f, true);
 }
 
 //HUGE ROOM FOR OPTIMISATION HERE -- Running out of time -- Would like to visit this again. 
@@ -50,6 +52,7 @@ void UHeatSeekingBrain::HandleTimerTick()
 	FVector seekerLocation = GetOwner()->GetActorLocation();
 
 	UHeatTarget* bestTarget = nullptr;
+	float bestTargetDistance = 0;
 	float bestTargetHeatScore = 0;
 
 	float distance;
@@ -59,12 +62,17 @@ void UHeatSeekingBrain::HandleTimerTick()
 	for (UHeatTarget* heatTarget : heatTargets)
 	{
 		AActor* targetOwner = heatTarget->GetOwner();
-		targetDirection = (targetOwner->GetActorLocation() - seekerLocation);
-		
+		targetDirection = (targetOwner->GetActorLocation() - seekerLocation).GetSafeNormal();
+
 		dotProduct = FVector::DotProduct(seekerDirection, targetDirection);
 
 		distance = FVector::Dist(targetOwner->GetActorLocation(), seekerLocation);
-		heatScore = heatTarget->HeatValue / FMath::Square(distance);
+		if (GEngine) GEngine->AddOnScreenDebugMessage(22, 5.f, FColor::Red, FString::Printf(TEXT("Distance: %.2f"), distance));
+		heatScore = heatTarget->HeatValue / distance;
+
+		UE_LOG(LogTemp, Warning, TEXT("Target Heat: %f, DetectableValue: %f"), heatScore, DetectableValue);
+		UE_LOG(LogTemp, Warning, TEXT("Target Dot: %f, VisionThresh: %f"), dotProduct, VisionThreshold);
+
 
 		//If not in vision code remove the object from the TArray.
 		if (dotProduct <= VisionThreshold || heatScore < DetectableValue)
@@ -73,22 +81,59 @@ void UHeatSeekingBrain::HandleTimerTick()
 		}
 		if (heatScore > bestTargetHeatScore)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("NewBestTarget"));
 			bestTarget = heatTarget;
+			bestTargetDistance = distance;
 			bestTargetHeatScore = heatScore;
 		}
 	}
-	if (!bestTarget) { targetLocation = seekerDirection * 100; return; }
+	if (!bestTarget)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NO Accepted Target Located"));
+		targetLocation = seekerLocation + (seekerDirection * 100);
+	}
 	else
 	{
-		targetLocation = bestTarget->GetOwner()->GetActorLocation();
+		UE_LOG(LogTemp, Warning, TEXT("Accepted Target Located"));
+		targetLocation = PredictTargetMotion(bestTarget, bestTargetDistance);
 	}
+
 
 	ABaseRocket* Rocket = Cast<ABaseRocket>(GetOwner());
 	if (Rocket) 
 	{ 
-		UE_LOG(LogTemp, Warning, TEXT("SETTING TARGET LOCATION"));
 		Rocket->CurrentTargetLocation = targetLocation; 
 	}
+
+	DrawDebugLine(GetWorld(), GetOwner()->GetActorLocation(), targetLocation, FColor::Red, false, 0.05f, 0, 2.0f);
+	DrawDebugBox(GetWorld(), targetLocation, FVector(50, 50, 50), FQuat::Identity, FColor::Red, false, 0.05f, 0, 2.0f);
+	DrawDebugCone(
+		GetWorld(),
+		GetOwner()->GetActorLocation(),
+		GetOwner()->GetActorForwardVector(),
+		40000.0f,
+		FMath::DegreesToRadians(FieldOfViewAngle / 2),
+		FMath::DegreesToRadians(FieldOfViewAngle / 2),
+		12,
+		FColor::Red,
+		false,
+		0.05f,
+		0,
+		3.0f
+	);
+}
+
+FVector UHeatSeekingBrain::PredictTargetMotion(UHeatTarget* target, float distance)
+{
+	if (!target) { return FVector(); }
+	AActor* targetActor = target->GetOwner();
+	FVector resultLocation = targetActor->GetActorLocation();
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Distance: %.2f"), distance));
+	float predictionTimeStep = FMath::Lerp(0.0f, predictionStepValue, FMath::Clamp(distance / predicitionFallOffStart, 0.0f, 1.0f));
+
+	resultLocation += targetActor->GetVelocity() * predictionTimeStep;
+
+	return resultLocation;
 }
 
 TArray<UHeatTarget*> UHeatSeekingBrain::GetAllTargets()

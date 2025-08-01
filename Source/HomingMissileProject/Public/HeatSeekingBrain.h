@@ -24,10 +24,16 @@ public:
 	FVector targetLocation = FVector();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float FieldOfViewAngle = 60.0f;
+	float FieldOfViewAngle = 50.0f;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float DetectableValue = 10000.0f;
+	float DetectableValue = 10.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float predictionStepValue = 2.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float predicitionFallOffStart = 50000.0f;
 
 
 public:
@@ -48,6 +54,9 @@ protected:
 	// Function to be called by the timer
 	UFUNCTION()
 	void HandleTimerTick();
+
+	UFUNCTION()
+	FVector PredictTargetMotion(UHeatTarget* target, float distance);
 
 	UFUNCTION()
 	TArray<UHeatTarget*> GetAllTargets();
