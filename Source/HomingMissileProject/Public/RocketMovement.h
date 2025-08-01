@@ -68,6 +68,9 @@ private:
 	UFUNCTION()
 	void UpdateMaxFuel(float newFuelVal, bool bIsFilling);
 
+	UPROPERTY()
+	bool bRocketIsLaunched = false;
+
 	UFUNCTION()
 	void EngineActiveTick(float deltaTime);
 

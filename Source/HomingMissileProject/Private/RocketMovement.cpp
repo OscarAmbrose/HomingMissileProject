@@ -24,6 +24,7 @@ bool URocketMovement::StartRocket()
 {
 	if (CurrentFuel == 0) { return false; }
 	bEngineIsActive = true;
+	bRocketIsLaunched = true;
 	UE_LOG(LogTemp, Log, TEXT("Engine should start!"));
 	return true;
 }
@@ -151,6 +152,8 @@ void URocketMovement::BeginPlay()
 void URocketMovement::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (!bRocketIsLaunched) { return; }
 
 	if (!bEngineIsActive) 
 	{ 
